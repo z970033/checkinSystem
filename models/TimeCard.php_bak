@@ -1,0 +1,52 @@
+<?php
+
+namespace app\models;
+
+use Yii;
+
+
+/**
+ * This is the model class for table "time_card".
+ *
+ * @property int $employee_id
+ * @property string $clock_in_at
+ * @property string $clock_out_at
+ */
+class TimeCard extends \yii\db\ActiveRecord
+{
+    /**
+     * {@inheritdoc}
+     */
+    const work_status ;
+
+    public static function tableName()
+    {
+        return 'time_card';
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function rules()
+    {
+        return [
+            [['employee_id'], 'required'],
+            [['employee_id'], 'integer'],
+            [['clock_in_at', 'clock_out_at'], 'safe'],
+        ];
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function attributeLabels()
+    {
+        return [
+            'employee_id' => 'Employee ID',
+            'clock_in_at' => 'Clock In At',
+            'clock_out_at' => 'Clock Out At',
+        ];
+    }
+
+
+}

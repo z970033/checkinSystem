@@ -1,0 +1,116 @@
+<?php
+
+use yii\helpers\Html;
+use yii\grid\GridView;
+
+/* @var $this yii\web\View */
+/* @var $searchModel app\models\WorkTableSearch */
+/* @var $dataProvider yii\data\ActiveDataProvider */
+
+$this->title = '個人工作日誌';
+$this->params['breadcrumbs'][] = $this->title;
+?>
+<script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+
+<div id="test">
+    <?= $test ?>
+</div>
+<div class="work-table-index">
+    <h1><?= Html::encode($this->title) ?></h1>
+    <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
+
+    <!-- <p>
+        <?= Html::a('Create Work Table', ['create'], ['class' => 'btn btn-success']) ?>
+    </p> -->
+    <?= GridView::widget([
+        'dataProvider' => $dataProvider,
+        // 'filterModel' => $searchModel,
+        'columns' => [
+            ['class' => 'yii\grid\SerialColumn'],
+
+            // 'employee_id',
+            // 'day',
+            // 'work_item',
+            // 'work_finish',
+            [
+                'header' => '日期',
+                'value' => 'day',
+            ],
+            [
+                'format' => 'html',
+                'header' => '工作大鋼',
+                'value' => function ($data) {
+                    // return Html::tag('pre', Html::encode($data->work_item));
+                   return  "<pre>".$data->work_item."</pre>";
+                },
+            ],  
+            [
+                'format' => 'html',
+                'header' => '完成工作',
+                'value' => function ($data) {
+                   return  "<pre>".$data->work_finish."</pre>";
+                },
+            ],  
+
+            // ['class' => 'yii\grid\ActionColumn'],
+        ],
+    ]); ?>
+</div>
+
+
+<script type="text/javascript">
+    
+    $("#w0 table thead").append('<tr id=search></tr>');
+    $("#search").append('<td></td> <td></td> <td></td> <td></td>');
+    $.each($('#search td'), function(key, value) {
+        // console.log(key + ": " + $(this).attr('class'));
+        $(this).html('');
+        switch(key) {
+            case 1:
+                $(this).append("<input type='text' class='form-control' name='day' maxlength='10' placeholder='依照日期搜尋'>");
+                break;
+            case 2:
+                $(this).append("<input type='text' class='form-control' name='work_item' placeholder='依照工作大綱搜尋'>");
+                break;
+            case 3:
+                $(this).append("<input type='text' class='form-control' name='work_finish' placeholder='依照完成工作搜尋'>");
+                break;
+            default:
+                $(this).html('#');
+        }
+    });
+
+    $.each($('#search td input'), function(key, value) {
+        $(this).on("input propertychange",function(){
+            
+            // $.post("<?= $url ?>",
+            //     {
+            //       name:"Donald Duck",
+            //       city:"Duckburg"
+            //     },
+            //     function(html, status){
+            //         console.log(html);
+            //         $(".work-table-index").empty().append(html);
+
+            // });
+            
+            $.ajax({
+                url: "<?= $url ?>",
+                type: 'POST',
+                success: function(html) {
+                    console.log(html);
+                    $(".work-table-index").empty().append(html);
+                },
+                error: function(xhr, ajaxOptions, thrownError) {
+                    $("#loading").addClass("hide");
+                    // showNotice('common', xhr.responseText);
+                    alert(xhr.status + ":請稍後重試 " + thrownError);
+                }
+            });
+        });
+
+        $(this).on("change", function () {
+            $(this).val('');
+        });
+    });
+</script>
